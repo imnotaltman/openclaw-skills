@@ -30,10 +30,11 @@ metadata: { "openclaw": { "emoji": "🌙", "always": true } }
 
 3. 선택한 작업 실행
    - status를 `in_progress`로 변경 후 manifest 저장
-   - 작업 내용에 따라 실행:
-     - 코드 작성/수정 → coder 에이전트 위임
+   - 작업 내용에 따라 적절한 프로바이더로 실행 (토큰 분산):
+     - 코드 작성/수정 → **Codex CLI 우선** (`!codex -q "작업 설명"`), 복잡하면 coder 에이전트 보조
+     - 리서치/분석 → **Gemini CLI 우선** (`!gemini -p "질문"`), gemini 스킬 활용
      - 코드 리뷰 → reviewer 에이전트 위임
-     - 리서치/정리/기타 → 직접 수행
+     - 파일 수정/설정 변경/기타 → 직접 수행
    - 완료 시 `completed`, result에 요약 기록
    - 실패 시:
      - `retries < max_retries` → retries +1, status를 `pending`으로 복원 (다음 tick에서 재시도)

@@ -20,8 +20,24 @@ date "+%Y-%m-%d %A %H:%M"
 
 ### 2. Weather (Seoul)
 
+Open-Meteo API (free, no API key required):
+
 ```bash
-curl -s "wttr.in/Seoul?format=3"
+curl -s "https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,weather_code&timezone=Asia/Seoul" | jq -r '
+def wmo_to_text:
+  if . == 0 then "Clear"
+  elif . == 1 or . == 2 or . == 3 then "Partly cloudy"
+  elif . == 45 or . == 48 then "Foggy"
+  elif . == 51 or . == 53 or . == 55 then "Drizzle"
+  elif . == 61 or . == 63 or . == 65 then "Rain"
+  elif . == 71 or . == 73 or . == 75 then "Snow"
+  elif . == 80 or . == 81 or . == 82 then "Rain showers"
+  elif . == 95 then "Thunderstorm"
+  elif . == 96 or . == 99 then "Thunderstorm with hail"
+  else "Unknown"
+  end;
+"Seoul: " + (.current.temperature_2m | tostring) + "°C, " + (.current.weather_code | wmo_to_text)
+'
 ```
 
 ### 3. Recent Messages (iMessage)

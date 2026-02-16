@@ -1,3 +1,9 @@
+---
+name: night-worker
+description: "야간 자율 작업 실행 엔진. manifest.yaml의 pending 작업을 순차 처리하고 결과를 기록한다."
+metadata: { "openclaw": { "emoji": "🌙", "always": true } }
+---
+
 # Night Worker Skill
 
 야간 자율 작업 실행 스킬. 각 cron tick마다 isolated session에서 실행된다.

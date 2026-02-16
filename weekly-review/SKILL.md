@@ -1,113 +1,55 @@
 ---
 name: weekly-review
-description: "Weekly review skill. Summarizes the week's diary entries, highlights achievements, learnings, and selects the most promising business idea."
-metadata: { "openclaw": { "emoji": "📅", "always": true } }
+description: "매주 일요일 밤 9시 주간 리뷰. 이번 주 일기를 종합하고 가장 유망한 비즈니스 아이디어 1개를 선정한다."
 ---
 
 # Weekly Review
 
-매주 일요일 밤 9시에 실행되는 주간 리뷰 스킬입니다.
+매주 일요일 밤 9시에 실행되는 주간 리뷰 스킬.
 
-## Instructions
+## 프로토콜
 
 ### 1. 이번 주 일기 수집
 
-최근 7일간의 일기 파일 읽기:
-
-```bash
-for i in {0..6}; do
+최근 7일간 일기 파일 읽기:
+```
+!for i in 0 1 2 3 4 5 6; do
   date=$(date -v-${i}d "+%Y-%m-%d")
-  file="/Users/imnotaltman/.openclaw/workspace/diary/${date}.md"
-  if [ -f "$file" ]; then
-    echo "=== $date ==="
-    cat "$file"
-    echo ""
-  fi
+  file="$HOME/Library/Mobile Documents/com~apple~CloudDocs/가족/Obsidian/openclaw/diary/${date}.md"
+  if [ -f "$file" ]; then echo "=== $date ==="; cat "$file"; echo ""; fi
 done
 ```
 
-### 2. 주간 리뷰 작성
+### 2. 이번 주 비즈니스 아이디어 수집
 
-다음 항목들을 포함하여 리뷰 작성:
-
-- **이번 주 주요 성과** (Major Achievements)
-- **배운 점** (Key Learnings)
-- **다음 주 목표** (Next Week Goals)
-- **가장 유망한 비즈니스 아이디어** (Most Promising Business Idea)
-  - 이번 주 생성된 비즈니스 아이디어 중 가장 실행 가능성이 높고 임팩트가 큰 것 1개 선정
-  - 선정 이유와 간단한 실행 계획 포함
-
-### 3. 파일 저장
-
-주차 계산 및 파일 저장:
-
-```bash
-# ISO 주차 계산 (월요일 기준)
-year=$(date "+%Y")
-week=$(date "+%V")
-output_file="/Users/imnotaltman/Library/Mobile Documents/iCloud~md~obsidian/Documents/openclaw/weekly-review/${year}-W${week}.md"
-
-# 디렉토리 생성
-mkdir -p "$(dirname "$output_file")"
-
-# 리뷰 내용 저장
-cat > "$output_file" <<'EOF'
-# Weekly Review ${year}-W${week}
-
-## 이번 주 주요 성과
-
-...
-
-## 배운 점
-
-...
-
-## 다음 주 목표
-
-...
-
-## 가장 유망한 비즈니스 아이디어
-
-**아이디어:** ...
-
-**선정 이유:** ...
-
-**실행 계획:** ...
-
----
-Generated on $(date "+%Y-%m-%d %H:%M")
-EOF
+최근 7일간 아이디어 파일 제목 읽기:
+```
+!find "$HOME/Library/Mobile Documents/com~apple~CloudDocs/가족/Obsidian/openclaw/business ideas/" -name "idea-*.md" -mtime -7 -exec grep -H "^# " {} \;
 ```
 
-### 4. iMessage 알림
+### 3. 주간 리뷰 작성
 
-주간 리뷰 요약을 iMessage로 전송:
+마크다운 파일 작성. 포함 내용:
+
+- **이번 주 주요 성과** — 일기에서 추출한 완료 작업, 새 기능, 수정 사항
+- **배운 점** — 시행착오, 새로 알게 된 것
+- **다음 주 목표** — 미완료 작업, 개선할 점, 새 계획
+- **이번 주 최고의 비즈니스 아이디어** — 수집한 아이디어 중 실행 가능성 + 임팩트 기준으로 1개 선정. 선정 이유 + 간단한 실행 계획 포함.
+
+### 4. Obsidian에 저장
 
 ```
-📅 주간 리뷰 완료
-
-이번 주 핵심:
-- 주요 성과: [한 줄 요약]
-- 배운 점: [한 줄 요약]
-- 다음 주: [한 줄 요약]
-- 선정 아이디어: [제목]
-
-자세한 내용은 Obsidian에서 확인하세요.
+!year=$(date "+%Y"); week=$(date "+%V")
+!mkdir -p "$HOME/Library/Mobile Documents/com~apple~CloudDocs/가족/Obsidian/openclaw/weekly-review"
 ```
+저장 경로: `~/Library/Mobile Documents/com~apple~CloudDocs/가족/Obsidian/openclaw/weekly-review/{YYYY}-W{NN}.md`
 
-## Cron Job 설정
+### 5. iMessage 알림
 
-매주 일요일 밤 9시 실행:
-
-```json
-{
-  "id": "weekly-review",
-  "name": "Weekly Review",
-  "description": "Generate weekly review from diary entries",
-  "schedule": "0 21 * * 0",
-  "enabled": true,
-  "command": "openclaw skill weekly-review"
-}
+저장 완료 후 exec tool로 전송:
 ```
+!/opt/homebrew/bin/imsg send --to "+821086493137" --text "주간 리뷰 요약 내용"
+```
+포맷: 주요 성과 1줄, 배운 점 1줄, 다음 주 목표 1줄, 선정 아이디어 제목. 5줄 이내.
 
-이 설정을 `~/.openclaw/config/jobs.json`에 추가하세요.
+message tool 사용 금지. 반드시 exec로 imsg send를 실행해.

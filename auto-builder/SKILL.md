@@ -39,6 +39,12 @@ GET http://localhost:3002/api/ideas
 **목표:** 아이디어 풀이 항상 3~5개 queued 상태로 유지되어야 한다. 칸반 보드에 아이디어가 계속 쌓여 보여야 한다.
 
 ### 1. 아이디어 발굴 (building/queued 없을 때만)
+
+**트렌드 발굴 전 리젝 목록 확인 (중복 방지):**
+- `GET http://localhost:3002/api/ideas/rejected` 호출해서 리젝된 아이디어 목록 가져오기
+- 리젝된 아이디어와 유사한 아이디어(제목/주제/핵심 기능이 겹치는 것)는 발굴하지 않는다
+- 유사도 판단 기준: 동일한 문제를 해결하거나, 동일한 기술 카테고리에서 거의 같은 접근법을 취하는 경우
+
 - web_fetch로 news.hada.io, Hacker News RSS 확인
 - 최근 Obsidian/openclaw/business ideas/ 에서 유망한 아이디어 확인
 - 아래 관심사 태그에서 영감 받기

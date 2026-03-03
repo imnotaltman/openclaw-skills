@@ -108,6 +108,29 @@ df -h / | tail -1 | awk '{print "Disk: " $5 " used (" $3 " / " $2 ")"}'
 memory_pressure | head -1
 ```
 
+### 8. Auto Builder Dashboard
+
+localhost:3002에서 대시보드 API를 호출해서 프로젝트 통계와 리뷰 제안 현황을 수집한다.
+
+```bash
+curl -s -H "x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88" http://localhost:3002/api/projects 2>/dev/null | jq '{total: length, public: [.[] | select(.status=="public")] | length, hold: [.[] | select(.status=="hold")] | length, built: [.[] | select(.status=="built")] | length}' || echo '{"error": "Dashboard API unavailable"}'
+```
+
+```bash
+curl -s -H "x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88" "http://localhost:3002/api/proposals?status=pending" 2>/dev/null | jq '{pending: length, titles: [.[:3][] | .title]}' || echo '{"error": "Dashboard API unavailable"}'
+```
+
+```bash
+curl -s -H "x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88" http://localhost:3002/api/proposals 2>/dev/null | jq '{total: length, pending: [.[] | select(.status=="pending")] | length, accepted: [.[] | select(.status=="accepted")] | length, committed: [.[] | select(.status=="committed")] | length}' || echo '{"error": "Dashboard API unavailable"}'
+```
+
+정리할 내용:
+- 프로젝트 통계: total / public / hold / built 수
+- 리뷰 제안: pending / accepted / committed / total 수
+- 대기 중 제안 상위 3건 제목 (있으면)
+
+API 응답이 실패하거나 서버가 꺼져있으면 "Dashboard offline" 한 줄로 표시하고 계속 진행.
+
 ## Output Format
 
 Present as a clean dashboard:
@@ -132,6 +155,14 @@ Weather: ...
 3. ...
 4. ...
 5. ...
+
+--- Auto Builder ---
+Projects: X total (Y public, Z hold)
+Reviews: A pending / B accepted / C total
+Pending:
+  - 제안 제목 1
+  - 제안 제목 2
+  - 제안 제목 3
 
 --- System ---
 Uptime: ...

@@ -28,7 +28,9 @@ description: "자율 프로젝트 빌더. 트렌드에서 아이디어를 발굴
 ### 0. 상태 확인 (매번 먼저 실행)
 ```
 GET http://localhost:3002/api/ideas
+Header: x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88
 ```
+> **인증 주의**: 모든 API 호출에 `-H "x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88"` 헤더 필수.
 
 **아이디어 풀 우선 채우기 원칙:**
 - queued 아이디어가 **3개 미만**이면 → 새 아이디어 발굴해서 queued 등록 (빌드 금지, 종료)

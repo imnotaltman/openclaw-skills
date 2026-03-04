@@ -71,12 +71,26 @@ description: "매일 밤 오늘의 OpenClaw 활동을 정리하여 일기를 작
   - 어려웠거나 배운 점
   - 내일 할 일
 
+## 실행 모드
+
+- **정규 모드** (기본, cron 10pm): 전체 일기 작성 후 저장. iMessage 알림.
+- **보강 모드** (heartbeat 등 낮 시간 호출 시): 기존 파일이 있으면 새로 발생한 활동만 추출해서 `## 보강 ({시:분})`
+  섹션을 파일 끝에 append. iMessage 알림 없음.
+
+  보강 판단 기준: 오늘 날짜 파일이 이미 존재 + 현재 시각이 오후 11시 이전이면 보강 모드.
+
 ## Obsidian에 저장
 
 1. 저장 경로: `~/Library/Mobile Documents/com~apple~CloudDocs/가족/Obsidian/openclaw/diary/{YYYY-MM-DD}.md`
 2. diary 폴더가 없으면 `mkdir -p`로 생성
-3. 이미 같은 날짜 파일이 있으면 덮어쓰기 (하루에 한 번만 작성하므로 최신 버전 유지)
-4. 저장 완료 후 iMessage로 간단히 알림:
+3. **정규 모드**: 이미 같은 날짜 파일이 있어도 덮어쓰기 (최신 전체 버전 유지)
+4. **보강 모드**: 기존 파일 끝에 아래 형식으로 추가:
+   ```
+   ## 보강 (HH:MM)
+   - 추가된 활동 1
+   - 추가된 활동 2
+   ```
+5. 저장 완료 후 iMessage 알림 (정규 모드만):
    ```
    !/opt/homebrew/bin/imsg send --to "+821086493137" --text "오늘 일기 작성 완료 — Obsidian/openclaw/diary에서 확인 가능"
    ```

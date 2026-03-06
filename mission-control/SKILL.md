@@ -131,6 +131,18 @@ curl -s -H "x-api-key: ae42e21daa510a6711171db0b87e2992e69f6ca1615e3b88" http://
 
 API 응답이 실패하거나 서버가 꺼져있으면 "Dashboard offline" 한 줄로 표시하고 계속 진행.
 
+### 9. 야간작업 현황
+
+```bash
+cat ~/.openclaw/workspace/nightwork/manifest.yaml 2>/dev/null || echo "없음"
+```
+
+manifest가 있으면:
+- `status`가 `completed`이면: 전체 완료, 각 작업 result 한줄씩
+- `status`가 `active`이면: 아직 진행 중, pending/in_progress/failed 수 표시
+- `status`가 `failed`이면: 실패한 작업 error 내용 표시
+- 파일이 없으면: "야간작업 없음"
+
 ## Output Format
 
 Present as a clean dashboard:
@@ -163,6 +175,9 @@ Pending:
   - 제안 제목 1
   - 제안 제목 2
   - 제안 제목 3
+
+--- 야간작업 ---
+(완료 / 진행중 / 없음 — 작업별 결과 요약)
 
 --- System ---
 Uptime: ...

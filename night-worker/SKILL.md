@@ -52,6 +52,7 @@ metadata: { "openclaw": { "emoji": "🌙", "always": true } }
 6. 전체 완료 확인 (**반드시 실행**)
    - 모든 작업이 `completed` 또는 `failed` 또는 `skipped`이면 (pending/in_progress 없음):
      - manifest status를 `completed`로 변경하고 저장
+     - manifest를 archive 폴더로 이동: `!mkdir -p ~/.openclaw/workspace/nightwork/archive && mv ~/.openclaw/workspace/nightwork/manifest.yaml ~/.openclaw/workspace/nightwork/archive/{manifest.id}.yaml`
      - cron 비활성화: `!openclaw cron disable night-worker`
      - iMessage 전송: `!imsg send --to "+821086493137" --text "야간작업 전체 완료!"`
    - 아직 `pending` 작업이 남아있으면 → 종료 (다음 tick에서 계속)

@@ -85,7 +85,15 @@ gh pr list --search "is:open review-requested:@me" --json number,title,repositor
 
 ### 6. Hot Topics (overnight)
 
-Search the web for the top 5 trending topics/news from overnight in Korea and globally (tech, AI, major events). Use a web search to find what's buzzing right now.
+Gemini CLI로 한국 및 글로벌 트렌드/뉴스를 조회한다 (리서치는 Gemini 우선):
+```bash
+gemini -p "오늘 새벽 사이 한국 및 글로벌 주요 뉴스/트렌드 5개를 한국어로 정리해. 기술, AI, 주요 사건 위주. 각 항목: 제목 — 한줄 요약 형식으로."
+```
+
+Gemini CLI 실패 시 web_search 툴로 fallback:
+```
+web_search: "Korea tech news today" + "global trending news today"
+```
 
 Present each topic as a one-liner with a brief summary:
 ```
